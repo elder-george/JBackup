@@ -1,4 +1,4 @@
-package backupdaemon;
+package backup.daemon;
 
 /**
  *

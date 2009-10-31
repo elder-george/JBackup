@@ -1,4 +1,4 @@
-package backupdaemon;
+package backup.daemon;
 
 import java.io.IOException;
 import java.net.*;

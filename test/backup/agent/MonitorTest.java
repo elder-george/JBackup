@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package backupagent;
+package backup.agent;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package backupdaemon;
+package backup.daemon;
 
 import java.io.IOException;
 import java.io.InputStream;

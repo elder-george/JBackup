@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package backupagent;
+package backup.agent;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
