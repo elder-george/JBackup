@@ -145,4 +145,25 @@ public class DirectoryDiffTest {
         notChangedOfCurrent.removeAll(instance.getChanged());
         assertArrayEquals(notChangedOfCurrent.toArray(), instance.getNotChanged().toArray());
     }
+
+    @Test
+    public void testUpdatedFileShouldNotBeMarkedAsDeleted(){
+        System.out.println("Updated files shouldn't be marked as deleted");
+        FileRecord[] monitoredFiles = new FileRecord[]{
+                new FileRecord("1", calendar.getTime()),
+                new FileRecord("2", calendar.getTime()),
+                new FileRecord("tochange", calendar.getTime())
+        };
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.add(Calendar.HOUR, 1);
+        FileRecord[] actualFiles = new FileRecord[]{
+                new FileRecord("1", calendar.getTime()),
+                new FileRecord("2", calendar.getTime()),
+                new FileRecord("tochange", calendar2.getTime())
+        };
+        DirectoryDiff diff = new DirectoryDiff(monitoredFiles, actualFiles);
+        assertEquals(1, diff.getChanged().size());
+        assertEquals(0, diff.getCreated().size());
+        assertEquals(0, diff.getDeleted().size());
+    }
 }

@@ -1,11 +1,13 @@
 package backupagent;
 
+import java.util.Date;
+
 /**
  *
  * @author Yuri Korchyomkin
  */
 public interface BackupService {
-    String[] getMonitoredFilesList();
-    void deleteFiles(String[] deleted);
-    void updateFiles(String[] names, byte[][] contents);
+    FileRecord[] getMonitoredFilesList();
+    void deleteFile(String fileName);
+    public void updateFile(String fileName, Date modificationDate, int offset, byte[] contents);
 }

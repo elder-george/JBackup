@@ -5,6 +5,9 @@
 
 package backupagent;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -13,17 +16,24 @@ import java.util.concurrent.TimeUnit;
  * @author Yuri Korchyomkin
  */
 class Monitor implements Runnable{
-
+    static final int SEND_BUFFER_SIZE = 65536;
     final BackupService service;
-    final String monitoredDirectory;
     final Thread monitorThread;
     final Semaphore shouldStop;
 
-    public Monitor(String monitoredDirectory, BackupService service) {
-        this.monitoredDirectory = monitoredDirectory;
+    final Folder folder;
+    final int timeoutMilliseconds;
+
+    public Monitor(Folder folder, BackupService service, int timeoutMilliseconds){
+        this.folder = folder;
         this.service = service;
         this.monitorThread = new Thread(this, "monitor");
-        this.shouldStop = new Semaphore(1);
+        this.shouldStop = new Semaphore(0);
+        this.timeoutMilliseconds = timeoutMilliseconds;
+    }
+
+    public Monitor(String monitoredDirectory, BackupService service, int timeoutMilliseconds) {
+        this(new FolderImpl(monitoredDirectory), service, timeoutMilliseconds);
     }
 
     public void start(){
@@ -31,15 +41,23 @@ class Monitor implements Runnable{
     }
 
     public void run(){
-        String[] monitoredFiles = service.getMonitoredFilesList();
+        System.out.println("Monitoring started");
         try{
-            while(!shouldStop.tryAcquire(0, TimeUnit.MILLISECONDS)){
-
+            while(!shouldStop.tryAcquire(timeoutMilliseconds, TimeUnit.MILLISECONDS)){
+                FileRecord[] monitoredFiles = service.getMonitoredFilesList();
+                FileRecord[] actualFiles = folder.getFiles();
+                DirectoryDiff diff = new DirectoryDiff(monitoredFiles, actualFiles);
+                System.out.printf("Created: %d; Deleted: %d; Changed: %d\n",
+                        diff.getCreated().size(), diff.getDeleted().size(), diff.getChanged().size());
+                deleteFiles(diff.getDeleted());
+                createFiles(diff.getCreated());
+                updateFiles(diff.getChanged());
             }
         }
         catch(InterruptedException ex){
             System.err.println("Monitor thread was interrupted");
         }
+        System.out.println("Monitoring stopped");
     }
 
     public void stop(){
@@ -51,5 +69,50 @@ class Monitor implements Runnable{
         catch(InterruptedException ex){
             System.err.println("Monitor thread was interrupted");
         }
+    }
+
+    private void createFiles(Collection<FileRecord> created) {
+        for(FileRecord file : created){
+            sendFileContents(file);
+        }
+
+    }
+
+    private void deleteFiles(Collection<FileRecord> deleted) {
+        for(FileRecord file : deleted){
+            service.deleteFile(file.getName());
+        }
+    }
+
+    private void updateFiles(Collection<FileRecord> changed) {
+        for(FileRecord file : changed){
+            sendFileContents(file);
+        }
+    }
+
+    private void sendFileContents(FileRecord file){
+        try{
+            InputStream stream = null;
+            try{
+                stream = folder.openFile(file);
+                byte[] buffer = new byte[SEND_BUFFER_SIZE];
+                int offset = 0;
+                int bytesRead;
+                do{
+                    bytesRead = stream.read(buffer,offset, buffer.length);
+                    service.updateFile(file.getName(), file.getModificationDate(), offset, buffer);
+                    offset += bytesRead;
+                }while(bytesRead == SEND_BUFFER_SIZE);
+            }
+            finally{
+                if(stream != null)
+                    stream.close();
+            }
+        }
+        catch(IOException ex){
+            System.err.printf("Transmitting file %s failed due to following reason: %s",
+                                file.getName(), ex.getMessage());
+        }
+
     }
 }

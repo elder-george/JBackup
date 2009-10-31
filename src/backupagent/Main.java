@@ -15,7 +15,7 @@ public class Main {
         AgentOptions options = new AgentOptions(args);
         BackupService service = connectToDaemon(options);
         System.out.println("connecting to "+options.getServerAddress()+":"+options.getPort());
-        Monitor monitor = new Monitor(options.getDirectory(),service);
+        Monitor monitor = new Monitor(options.getDirectory(),service, 5000);
         monitor.start();
         System.in.read();
         monitor.stop();
