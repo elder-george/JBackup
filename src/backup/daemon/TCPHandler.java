@@ -1,40 +1,42 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package backup.daemon;
 
+import backup.protocol.Request;
+import backup.protocol.Response;
+import java.io.DataInput;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
 
 /**
  *
  * @author Yuri Korchyomkin
  */
 public class TCPHandler implements Runnable {
+    private final Session session;
     private final InputStream in;
     private final OutputStream out;
     final static int MAX_RECV_BUFFER = 8192;
+    private final RequestFactoryImpl requestFactory;
 
-    TCPHandler(InputStream in, OutputStream out){
+    TCPHandler(Session session, backup.daemon.RequestFactoryImpl requestFactory, InputStream in, OutputStream out){
+        this.session = session;
         this.in = in;
         this.out = out;
+        this.requestFactory = requestFactory;
     }
 
     public void run() {
-        String command;
-        byte[] data = new byte[MAX_RECV_BUFFER];
+        Request request;
         try{
             while(true){
-                command = readCommand();
-                if(hasAdditionalData(command));
-                    readAdditionalData(data);
-                 handleCommand(command, data);
+                String command = readCommand();
+                request = requestFactory.createRequest(session, command);
+                request.readAdditionalData(in);
+                Response response = request.process();
+                response.writeResponse(out);
             }
         }catch(SocketException ex){
             System.err.println("Connection broken : "+ ex.getMessage());
@@ -43,30 +45,25 @@ public class TCPHandler implements Runnable {
         catch(IOException ex){
             System.err.println("I/O error: "+ex.getLocalizedMessage());
         }
+        catch(Exception ex){
+            System.err.println("Unexpected error: " + ex.toString());
+        }
     }
 
     private String readCommand() throws SocketException, IOException {
+        DataInput di = new DataInputStream(in);
         StringBuffer buffer = new StringBuffer();
-        int symbol;
-        while(-1 != (symbol = in.read())){
-            if(Character.isValidCodePoint(symbol)
-                    || symbol != Character.LINE_SEPARATOR)
-                buffer.append(Character.toChars(symbol));
-            else break;
+        char symbol;
+        try{
+            while(true){
+                symbol = di.readChar();
+                if(symbol == '\n' || symbol == '\r' || symbol == Character.LINE_SEPARATOR)
+                    break;
+                buffer.append(symbol);
+            }
         }
-        return buffer.toString();
+        finally{
+            return buffer.toString();
+        }
     }
-
-    private boolean hasAdditionalData(String command) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    private void readAdditionalData(byte[] data) throws IOException  {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    private void handleCommand(String command, byte[] data)  throws IOException {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
 }

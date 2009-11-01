@@ -9,15 +9,20 @@ import java.util.concurrent.Executor;
  * @author Yuri Korchyomkin
  */
 public class TCPBackupServer implements Runnable {
+    private final SessionStore sessions;
     private final ServerSocket listeningSocket;
     private final Thread thread;
     private final Executor executor;
     boolean stopped;
+    private final RequestFactoryImpl requestFactory;
 
-    public TCPBackupServer(ServerSocket listeningSocket, Executor executor){
+    public TCPBackupServer(SessionStore sessions, ServerSocket listeningSocket, Executor executor,
+                            RequestFactoryImpl requestFactory){
+        this.sessions = sessions;
         this.listeningSocket = listeningSocket;
         this.thread = new Thread(this, "listener");
         this.executor = executor;
+        this.requestFactory = requestFactory;
     }
 
     public void start(){
@@ -44,6 +49,8 @@ public class TCPBackupServer implements Runnable {
     }
 
     private void spawnHandler(Socket socket) throws IOException {
-            executor.execute(new TCPHandler(socket.getInputStream(), socket.getOutputStream()));
+        Session session = this.sessions.getSession(socket.getInetAddress().getCanonicalHostName(), 
+                                                    socket.getPort());
+        executor.execute(new TCPHandler(session, requestFactory, socket.getInputStream(), socket.getOutputStream()));
     }
 }
