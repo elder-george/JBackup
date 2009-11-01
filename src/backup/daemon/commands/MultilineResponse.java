@@ -1,6 +1,8 @@
 package backup.daemon.commands;
 
 import backup.protocol.Response;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 
 /**
@@ -14,11 +16,11 @@ public class MultilineResponse extends Response {
         this.lines = lines;
     }
     @Override
-    public void writeResponse(OutputStream out) {
-        /*CharBuffer buffer = out.asCharBuffer();
-        buffer.append("OK "+ lines.length + "\n");
+    public void writeResponse(OutputStream out) throws IOException{
+        DataOutputStream buffer = new DataOutputStream(out);
+        buffer.writeBytes("OK "+ lines.length + "\n");
         for(String line : lines)
-            buffer.append(line + "\n");
-         */
+            buffer.writeBytes(line + "\n");
+        out.flush();
     }
 }

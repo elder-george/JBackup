@@ -5,6 +5,10 @@
 
 package backup.daemon.commands;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -32,13 +36,21 @@ public class MultilineResponseTest {
      * Test of writeResponse method, of class MultilineResponse.
      */
     @Test
-    public void testWriteResponse() {
+    public void testWriteResponse() throws Exception {
         System.out.println("writeResponse");
-        OutputStream out = null;
-        MultilineResponse instance = null;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        String[] lines = new String[]{ "1.txt", "2.txt"};
+        MultilineResponse instance = new MultilineResponse(lines);
         instance.writeResponse(out);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        BufferedReader rdr = new BufferedReader(new InputStreamReader(in));
+        String[] header = rdr.readLine().split(" ");
+        assertEquals(header[0], "OK");
+        int lineNumber = Integer.valueOf(header[1]);
+        assertEquals(lines.length, lineNumber);
+        for(int i = 0; i < lineNumber; i++){
+            assertEquals(lines[i], rdr.readLine());
+        }
     }
 
 }
