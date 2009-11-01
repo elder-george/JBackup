@@ -14,8 +14,7 @@ public class RequestFactoryImpl implements RequestFactory {
         String[] parts = string.split(" ");
         assert(parts.length > 0);
         if(parts[0].equals(Commands.SYNC_DIRECTORY)){
-            session.setDirectory(parts[1]);
-            return new SyncDirectoryRequest(parts[1]);
+            return new SyncDirectoryRequest(session, parts[1]);
         }
         if(parts[0].equals(Commands.GET_FILE_LIST))
             return new GetListRequest(session.getDirectoryName());

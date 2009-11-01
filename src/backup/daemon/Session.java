@@ -8,7 +8,7 @@ public class Session {
     private final String machineName;
     private String directory;
 
-    Session(String machineName) {
+    public Session(String machineName) {
         this.machineName = machineName;
     }
 

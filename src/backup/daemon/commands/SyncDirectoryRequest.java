@@ -1,5 +1,6 @@
 package backup.daemon.commands;
 
+import backup.daemon.Session;
 import backup.protocol.Commands;
 import backup.protocol.Request;
 import backup.protocol.Response;
@@ -11,10 +12,12 @@ import java.io.InputStream;
  * This request should be the first command from agent.
  */
 public class SyncDirectoryRequest extends Request {
+    private final Session session;
     private final String directory;
 
-    public SyncDirectoryRequest(String directory) {
+    public SyncDirectoryRequest(Session session, String directory) {
         super(Commands.SYNC_DIRECTORY);
+        this.session = session;
         this.directory = directory;
     }
 
@@ -24,6 +27,7 @@ public class SyncDirectoryRequest extends Request {
 
     @Override
     public Response process() {
+        session.setDirectory(directory);
         return new OKResponse();
     }
 
