@@ -7,4 +7,4 @@
 ^build.*$
 ^nbproject.*$
 ^dist.*$
-^junit*properties$
+^junit.*properties$
