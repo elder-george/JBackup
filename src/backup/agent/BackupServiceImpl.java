@@ -3,6 +3,12 @@
 
 package backup.agent;
 
+import backup.agent.commands.GetListRequest;
+import backup.agent.commands.GetListResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -10,15 +16,33 @@ import java.util.Date;
  * @author Yuri Korchyomkin
  */
 public class BackupServiceImpl implements BackupService{
+    private final OutputStream out;
+    private final InputStream in;
 
-    public FileRecord[] getMonitoredFilesList() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public BackupServiceImpl(OutputStream out, InputStream in){
+        this.out = out;
+        this.in = in;
     }
 
+    @Override
+    public FileRecord[] getMonitoredFilesList() throws IOException, ParseException {
+        GetListRequest rq = new GetListRequest();
+        rq.send(out);
+        GetListResponse response = new GetListResponse(readLine(in));
+        response.readAdditionalData(in);
+        return response.getFiles();
+    }
+
+    String readLine(InputStream in) throws IOException{
+        return null;
+    }
+    
+    @Override
     public void deleteFile(String fileName) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
+    @Override
     public void updateFile(String fileName, Date modificationDate, int offset, byte[] contents) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
