@@ -1,6 +1,5 @@
 package backup.daemon.commands;
 
-import backup.protocol.Response;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;

@@ -1,7 +1,7 @@
 package backup.daemon;
 
-import backup.protocol.Request;
-import backup.protocol.Response;
+import backup.daemon.commands.Request;
+import backup.daemon.commands.Response;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.IOException;

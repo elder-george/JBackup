@@ -1,7 +1,7 @@
 package backup.daemon;
 
 import backup.protocol.Commands;
-import backup.protocol.Request;
+import backup.daemon.commands.Request;
 import java.io.*;
 import java.nio.CharBuffer;
 import java.util.ArrayList;

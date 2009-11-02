@@ -1,4 +1,4 @@
-package backup.protocol;
+package backup.daemon.commands;
 
 import java.io.IOException;
 import java.io.OutputStream;

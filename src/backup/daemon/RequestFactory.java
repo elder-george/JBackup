@@ -1,6 +1,6 @@
 package backup.daemon;
 
-import backup.protocol.Request;
+import backup.daemon.commands.Request;
 
 /**
  *

@@ -2,7 +2,7 @@ package backup.daemon;
 
 import backup.daemon.commands.GetListRequest;
 import backup.daemon.commands.SyncDirectoryRequest;
-import backup.protocol.Request;
+import backup.daemon.commands.Request;
 import backup.protocol.Commands;
 
 /**

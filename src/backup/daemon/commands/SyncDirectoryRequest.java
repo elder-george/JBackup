@@ -2,8 +2,6 @@ package backup.daemon.commands;
 
 import backup.daemon.Session;
 import backup.protocol.Commands;
-import backup.protocol.Request;
-import backup.protocol.Response;
 import java.io.InputStream;
 
 /**
