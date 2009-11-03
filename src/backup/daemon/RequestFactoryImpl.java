@@ -1,5 +1,6 @@
 package backup.daemon;
 
+import backup.daemon.commands.DeleteFileRequest;
 import backup.daemon.commands.GetListRequest;
 import backup.daemon.commands.SyncDirectoryRequest;
 import backup.daemon.commands.Request;
@@ -18,6 +19,8 @@ public class RequestFactoryImpl implements RequestFactory {
         }
         if(parts[0].equals(Commands.GET_FILE_LIST))
             return new GetListRequest(session.getDirectoryName());
+        if(parts[0].equals(Commands.DELETE_FILE))
+            return new DeleteFileRequest(parts[1]);
         throw new IllegalArgumentException(string);
     }
 }

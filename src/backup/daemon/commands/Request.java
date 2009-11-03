@@ -1,5 +1,6 @@
 package backup.daemon.commands;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -13,7 +14,7 @@ public abstract class Request {
         this.commandText = commandText;
     }
 
-    public abstract void readAdditionalData(InputStream in);
+    public abstract void readAdditionalData(InputStream in) throws IOException;
 
     public abstract Response process();
 }
