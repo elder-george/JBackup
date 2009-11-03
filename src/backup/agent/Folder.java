@@ -1,5 +1,6 @@
 package backup.agent;
 
+import backup.protocol.FileRecord;
 import java.io.IOException;
 import java.io.InputStream;
 

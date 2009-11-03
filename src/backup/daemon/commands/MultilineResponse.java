@@ -1,8 +1,10 @@
 package backup.daemon.commands;
 
+import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 
 /**
  *
@@ -20,6 +22,7 @@ public class MultilineResponse extends Response {
         buffer.writeBytes("OK "+ lines.length + "\n");
         for(String line : lines)
             buffer.writeBytes(line + "\n");
+        buffer.flush(); 
         out.flush();
     }
 }

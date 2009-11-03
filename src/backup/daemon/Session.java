@@ -33,5 +33,7 @@ public class Session {
         this.directory = directory;
     }
 
-
+    public FolderWriter getFolderWriter(){
+        throw new UnsupportedOperationException();
+    }
 }

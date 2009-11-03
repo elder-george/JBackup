@@ -18,14 +18,6 @@ public class MultilineResponseTest {
     public MultilineResponseTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
     /**
      * Test of writeResponse method, of class MultilineResponse.
      */

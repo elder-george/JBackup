@@ -4,7 +4,10 @@
 package backup.daemon.commands;
 
 import backup.agent.commands.UpdateFileRequest;
+import backup.daemon.FolderWriter;
+import backup.daemon.Session;
 import backup.protocol.Commands;
+import backup.protocol.FileRecord;
 import backup.protocol.Responses;
 import backup.protocol.SocketAutoConnector;
 import java.io.IOException;
@@ -16,9 +19,15 @@ import static org.junit.Assert.*;
  *
  * @author Yuri Korchyomkin
  */
-public class UpdateFileTest {
+public class UpdateFileTest extends Session implements FolderWriter {
 
     SocketAutoConnector connector;
+
+    public UpdateFileTest() {
+        super("localhost");
+    }
+
+
 
     @Before
     public void setUp()throws Exception {
@@ -52,14 +61,16 @@ public class UpdateFileTest {
         backup.agent.commands.UpdateFileRequest clientRequest = new UpdateFileRequest(filename, offset, bytes);
         clientRequest.send(connector.getClientOut());
         // reading request at server
-        String[] requestString = readLine(connector.getServerIn()).split(" ");
-        assertEquals(Commands.UPDATE_FILE, requestString[0]);
-        assertEquals(filename, requestString[1]);
-        int actualOffset = Integer.valueOf(requestString[2]);
-        int size = Integer.valueOf(requestString[3]);
+        String requestString = readLine(connector.getServerIn());
+        System.out.println(requestString);
+        String[] requestParts = requestString.split(" ");
+        assertEquals(Commands.UPDATE_FILE, requestParts[0]);
+        assertEquals(filename, requestParts[1]);
+        int actualOffset = Integer.valueOf(requestParts[2]);
+        int size = Integer.valueOf(requestParts[3]);
         assertEquals(offset, actualOffset);
         assertEquals(bytes.length, size);
-        backup.daemon.commands.UpdateFileRequest serverRequest = new backup.daemon.commands.UpdateFileRequest(filename, offset, size);
+        backup.daemon.commands.UpdateFileRequest serverRequest = new backup.daemon.commands.UpdateFileRequest(this,filename, offset, size);
         serverRequest.readAdditionalData(connector.getServerIn());
         // sensing response
         backup.daemon.commands.Response serverResponse =  serverRequest.process();
@@ -68,6 +79,18 @@ public class UpdateFileTest {
         String responseString = readLine(connector.getClientIn());
         assertTrue(responseString.startsWith(Responses.OK));
         
+    }
+
+    public FileRecord[] getStoredFiles() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void deleteFile(String filename) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void updateFile(String filename, int offset, byte[] bytes) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

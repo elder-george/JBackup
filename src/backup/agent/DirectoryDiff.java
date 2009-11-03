@@ -1,6 +1,7 @@
 package backup.agent;
 
 
+import backup.protocol.FileRecord;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;

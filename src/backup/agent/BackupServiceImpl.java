@@ -3,6 +3,7 @@
 
 package backup.agent;
 
+import backup.protocol.FileRecord;
 import backup.agent.commands.DeleteFileRequest;
 import backup.agent.commands.DeleteFileResponse;
 import backup.agent.commands.GetListRequest;

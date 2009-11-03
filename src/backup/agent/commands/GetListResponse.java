@@ -3,7 +3,7 @@
 
 package backup.agent.commands;
 
-import backup.agent.FileRecord;
+import backup.protocol.FileRecord;
 import backup.protocol.Responses;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,15 +31,27 @@ public class GetListResponse implements Response{
         lineCount = Integer.valueOf(parts[1]);
     }
 
+    String readLine(java.io.InputStream in) throws IOException{
+        int symbol;
+        StringBuffer buffer = new StringBuffer();
+        while((symbol = in.read()) != -1){
+            if(symbol == '\n' || symbol == '\r' || symbol == Character.LINE_SEPARATOR)
+                break;
+            buffer.append((char) symbol);
+        }
+        return buffer.toString();
+    }
+
     @Override
     public void readAdditionalData(InputStream in) throws IOException, ParseException {
         assert(files == null);
         ArrayList<FileRecord> fileRecords = new ArrayList<FileRecord>();
-        BufferedReader rdr = new BufferedReader(new InputStreamReader(in));
         for(int i = 0; i < lineCount; i++)
         {
-            String[] record = rdr.readLine().split(" ");
-            fileRecords.add(new FileRecord(record[0], format.parse(record[1])));
+            String line = readLine(in);
+            String[] record = line.split(" ");
+            //HACK!
+            fileRecords.add(new FileRecord(record[0], format.parse(record[1]+ " "+ record[2])));
         }
         this.files = new FileRecord[fileRecords.size()];
         fileRecords.toArray(files);

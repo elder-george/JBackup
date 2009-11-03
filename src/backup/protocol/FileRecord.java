@@ -1,4 +1,4 @@
-package backup.agent;
+package backup.protocol;
 
 import java.util.Date;
 

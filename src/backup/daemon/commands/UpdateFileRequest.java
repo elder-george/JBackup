@@ -3,6 +3,7 @@
 
 package backup.daemon.commands;
 
+import backup.daemon.Session;
 import backup.protocol.Commands;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,13 +13,15 @@ import java.io.InputStream;
  * @author Yuri Korchyomkin
  */
 public class UpdateFileRequest extends Request{
+    private final Session session;
     private final String filename;
     private final int offset;
     private final int size;
     byte[] data;
 
-    public UpdateFileRequest(String filename, int offset, int size){
+    public UpdateFileRequest(Session session, String filename, int offset, int size){
         super(Commands.UPDATE_FILE);
+        this.session = session;
         this.filename = filename;
         this.offset = offset;
         this.size = size;
@@ -34,6 +37,7 @@ public class UpdateFileRequest extends Request{
 
     @Override
     public Response process() {
+        session.getFolderWriter().updateFile(filename, offset, data);
         return new OKResponse();
     }
 

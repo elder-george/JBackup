@@ -1,10 +1,14 @@
 package backup.agent;
 
+import backup.protocol.FileRecord;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -49,7 +53,11 @@ class Monitor implements Runnable{
                 updateFiles(diff.getChanged());
             }
         }
-        catch(InterruptedException ex){
+        catch (IOException ex) {
+            System.err.println("I/O error: "+ex.getMessage());
+        }        catch (ParseException ex) {
+            System.err.println("Data parsing error: "+ex.getMessage());
+        }        catch(InterruptedException ex){
             System.err.println("Monitor thread was interrupted");
         }
         System.out.println("Monitoring stopped");
@@ -66,26 +74,26 @@ class Monitor implements Runnable{
         }
     }
 
-    private void createFiles(Collection<FileRecord> created) {
+    private void createFiles(Collection<FileRecord> created) throws ParseException {
         for(FileRecord file : created){
             sendFileContents(file);
         }
 
     }
 
-    private void deleteFiles(Collection<FileRecord> deleted) {
+    private void deleteFiles(Collection<FileRecord> deleted) throws IOException, ParseException {
         for(FileRecord file : deleted){
             service.deleteFile(file.getName());
         }
     }
 
-    private void updateFiles(Collection<FileRecord> changed) {
+    private void updateFiles(Collection<FileRecord> changed) throws ParseException {
         for(FileRecord file : changed){
             sendFileContents(file);
         }
     }
 
-    private void sendFileContents(FileRecord file){
+    private void sendFileContents(FileRecord file) throws ParseException{
         try{
             InputStream stream = null;
             try{

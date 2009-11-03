@@ -4,12 +4,9 @@
 package backup.agent.commands;
 
 import backup.protocol.Commands;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,14 +19,6 @@ import static org.junit.Assert.*;
 public class UpdateFileRequestTest {
 
     public UpdateFileRequestTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
     }
 
     String readLine(java.io.InputStream in) throws IOException{

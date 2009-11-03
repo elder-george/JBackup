@@ -1,5 +1,6 @@
 package backup.agent;
 
+import backup.protocol.FileRecord;
 import java.util.*;
 import org.junit.After;
 import org.junit.AfterClass;
