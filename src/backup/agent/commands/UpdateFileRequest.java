@@ -26,8 +26,8 @@ public class UpdateFileRequest implements Request{
 
     public void send(OutputStream out) throws IOException {
         OutputStreamWriter wr = new OutputStreamWriter(out);
-        wr.write(MessageFormat.format("{0} {1} {2,number,integer} {3,number,integer}\n",
-                Commands.UPDATE_FILE, filename, offset, bytes.length));
+        //TODO: reimplement with MessageFormat (didn't work for the first time)
+        wr.write(Commands.UPDATE_FILE+" "+ filename+" "+ offset+" "+ bytes.length+"\n");
         wr.flush();
         out.write(bytes);
         out.flush();

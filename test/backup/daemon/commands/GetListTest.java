@@ -87,7 +87,6 @@ public class GetListTest extends Session implements FolderWriter{
         clientSideRequest.send(connector.getClientOut());
         // receiving request on server
         String requestString = readLine(connector.getServerIn());
-        System.out.println("Request: "+requestString);
         assertTrue(requestString.startsWith(Commands.GET_FILE_LIST));
         Request serverSideRequest = factory.createRequest(this, requestString);
         serverSideRequest.readAdditionalData(connector.getServerIn());
@@ -95,7 +94,6 @@ public class GetListTest extends Session implements FolderWriter{
         serverSideRequest.process().writeResponse(connector.getServerOut());
         // receiving response on client
         String responseString = readLine(connector.getClientIn());
-        System.out.println("Response: "+responseString);
         backup.agent.commands.GetListResponse clientSideResponse = new GetListResponse(responseString);
         clientSideResponse.readAdditionalData(connector.getClientIn());
 
