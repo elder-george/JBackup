@@ -37,8 +37,12 @@ public class UpdateFileRequest extends Request{
 
     @Override
     public Response process() {
-        session.getFolderWriter().updateFile(filename, offset, data);
-        return new OKResponse();
+        try{
+            session.getFolderWriter().updateFile(filename, offset, data);
+            return new OKResponse();
+        }catch(IOException ex){
+            return new ErrorResponse(ex.getMessage());
+        }
     }
 
 }

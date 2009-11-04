@@ -4,6 +4,7 @@
 package backup.daemon;
 
 import backup.protocol.FileRecord;
+import java.io.IOException;
 
 /**
  *
@@ -11,6 +12,6 @@ import backup.protocol.FileRecord;
  */
 public interface FolderWriter {
     FileRecord[] getStoredFiles();
-    void deleteFile(String filename);
-    void updateFile(String filename, int offset, byte[] bytes);
+    void deleteFile(String filename) throws IOException;
+    void updateFile(String filename, int offset, byte[] bytes) throws IOException;
 }

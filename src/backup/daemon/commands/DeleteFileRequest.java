@@ -2,6 +2,7 @@ package backup.daemon.commands;
 
 import backup.daemon.Session;
 import backup.protocol.Commands;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -24,7 +25,11 @@ public class DeleteFileRequest extends Request{
 
     @Override
     public Response process() {
-        session.getFolderWriter().deleteFile(filename);
-        return new OKResponse();
+        try{
+            session.getFolderWriter().deleteFile(filename);
+            return new OKResponse();
+        }catch(IOException ex){
+            return new ErrorResponse(ex.getMessage());
+        }
     }
 }
