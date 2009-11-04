@@ -4,7 +4,7 @@
 package backup.protocol;
 
 /**
- *
+ * Constants used for identifyin responses.
  * @author Yuri Korchyomkin
  */
 public class Responses {

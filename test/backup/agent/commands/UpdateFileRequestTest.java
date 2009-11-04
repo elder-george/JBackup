@@ -42,10 +42,10 @@ public class UpdateFileRequestTest {
         byte[] bytes = new byte[]{1,2,3,4,5,6,7,8,9,10};
         int offset = 42;
         String filename = "1.txt";
-        UpdateFileRequest instance = new UpdateFileRequest(filename, offset, bytes);
+        UpdateFileRequest instance = new UpdateFileRequest(filename, offset, bytes, bytes.length);
         instance.send(out);
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-        String[] requestStringParts = readLine(in).split(" ");
+        String[] requestStringParts = readLine(in).split("\\|");
         assertEquals(Commands.UPDATE_FILE, requestStringParts[0]);
         assertEquals(filename, requestStringParts[1]);
         int actualOffset = Integer.valueOf(requestStringParts[2]);

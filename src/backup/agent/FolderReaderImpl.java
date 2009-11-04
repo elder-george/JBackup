@@ -8,14 +8,22 @@ import java.io.InputStream;
 import java.util.Date;
 
 /**
- *
+ * Default implementation of FolderReader interface.
  * @author Yuri Korchyomkin
  */
-public class FolderImpl implements Folder{
+public class FolderReaderImpl implements FolderReader{
 
     final String name;
-    public FolderImpl(String folder){
-        name = folder;
+    final File folder;
+    /**
+     * Initializes instance of FolderReaderImpl class.
+     * @param directoryName name of directory. If this directory doesn't exists, it will be created.
+     */
+    public FolderReaderImpl(String directoryName){
+        name = directoryName;
+        this.folder = new File(directoryName);
+        if(!this.folder.exists())
+            this.folder.mkdir();
     }
 
     public String getName() {
@@ -23,8 +31,9 @@ public class FolderImpl implements Folder{
     }
 
     public FileRecord[] getFiles() {
-        File folder = new File(name);
         File[] filesInFolder = folder.listFiles();
+        if(filesInFolder == null)
+            filesInFolder = new File[0];
         FileRecord[] files = new FileRecord[filesInFolder.length];
         for(int i= 0;i<files.length; i++){
             File currFile = filesInFolder[i];
@@ -35,7 +44,9 @@ public class FolderImpl implements Folder{
     }
 
     public InputStream openFile(FileRecord file) throws IOException {
-        return new FileInputStream(file.getName());
+        File f = new File(folder, file.getName());
+        System.out.println("Opening file "+ f.getAbsolutePath());
+        return new FileInputStream(f);
     }
 
 }

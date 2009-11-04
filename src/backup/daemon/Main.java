@@ -15,12 +15,13 @@ public class Main {
         TCPBackupServer server = null;
         try{
             DaemonOptions options = new DaemonOptions(args);
-            SessionStore sessionStore = new SessionStore();
+            SessionStore sessionStore = new SessionStore(options.getRootDirectory());
             ServerSocket socket = new ServerSocket(options.getPort());
             ExecutorService executor = Executors.newCachedThreadPool();
             RequestFactory requestFactory = new RequestFactoryImpl();
             server = new TCPBackupServer(sessionStore, socket, executor, requestFactory);
             server.start();
+            System.in.read();
         }catch(ParseException ex){
             System.err.println(ex.getMessage());
         }

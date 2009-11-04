@@ -7,7 +7,7 @@ import java.io.File;
 import java.text.ParseException;
 
 /**
- *
+ * Option parser for Daemon process.
  * @author Yuri Korchyomkin
  */
 public class DaemonOptions {

@@ -2,15 +2,13 @@ package backup.daemon;
 
 import backup.daemon.commands.Request;
 import backup.daemon.commands.Response;
-import java.io.DataInput;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.SocketException;
 
 /**
- *
+ * Object handling requests from single agent.
  * @author Yuri Korchyomkin
  */
 public class TCPHandler implements Runnable {
@@ -31,10 +29,17 @@ public class TCPHandler implements Runnable {
         Request request;
         try{
             while(true){
+                // read a line with request header.
                 String command = readCommand();
+                if(command == null || command.equals(""))
+                    continue;
+                // parse it
                 request = requestFactory.createRequest(session, command);
+                // some requests require additional data (currently, only UPD_FILE)
                 request.readAdditionalData(in);
+                // as a result of processing we receive response object
                 Response response = request.process();
+                // that can be sent to client.
                 response.writeResponse(out);
             }
         }catch(SocketException ex){
@@ -46,19 +51,18 @@ public class TCPHandler implements Runnable {
         }
         catch(Exception ex){
             System.err.println("Unexpected error: " + ex.toString());
+            ex.printStackTrace(System.err);
         }
     }
 
     private String readCommand() throws SocketException, IOException {
-        DataInput di = new DataInputStream(in);
         StringBuffer buffer = new StringBuffer();
-        char symbol;
+        int symbol;
         try{
-            while(true){
-                symbol = di.readChar();
+            while((symbol = in.read()) != -1){
                 if(symbol == '\n' || symbol == '\r' || symbol == Character.LINE_SEPARATOR)
                     break;
-                buffer.append(symbol);
+                buffer.append((char)symbol);
             }
         }
         finally{

@@ -39,11 +39,13 @@ public class FolderWriterImplTest {
 
     @After
     public void tearDown() throws Exception {
-        for(File f: folder.listFiles())
+        File[] files = folder.listFiles();
+        if(files == null) files = new File[0];
+        for(File f: files)
             if(f != null)
                 f.delete();
         folder.delete();
-        files.clear();
+        this.files.clear();
     }
 
     /**

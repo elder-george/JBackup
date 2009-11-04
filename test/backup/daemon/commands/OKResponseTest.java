@@ -30,6 +30,6 @@ public class OKResponseTest {
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
         BufferedReader rdr = new BufferedReader(new InputStreamReader(in));
         String responseText = rdr.readLine();
-        assertTrue(responseText.equals("OK"));
+        assertTrue(responseText.startsWith("OK"));
    }
 }

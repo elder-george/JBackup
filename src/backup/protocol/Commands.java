@@ -1,7 +1,7 @@
 package backup.protocol;
 
 /**
- *
+ * Constants identifying request type.
  * @author Yuri Korchyomkin
  */
 public final class Commands {

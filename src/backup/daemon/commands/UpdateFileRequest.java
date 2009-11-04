@@ -31,8 +31,15 @@ public class UpdateFileRequest extends Request{
     @Override
     public void readAdditionalData(InputStream in) throws IOException{
         data = new byte[size];
-        if(in.read(data) == -1)
-            throw new IOException("Can't read data");
+        int off = 0;
+        while(true){
+            int bytesRead = in.read(data, off, size - off);
+            if(bytesRead == -1)
+                throw new IOException("Can't read data");
+            off += bytesRead;
+            if(off ==size)
+                break;
+        }
     }
 
     @Override
@@ -41,6 +48,7 @@ public class UpdateFileRequest extends Request{
             session.getFolderWriter().updateFile(filename, offset, data);
             return new OKResponse();
         }catch(IOException ex){
+            System.err.println(ex);
             return new ErrorResponse(ex.getMessage());
         }
     }

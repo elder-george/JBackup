@@ -8,18 +8,18 @@ import backup.daemon.commands.UpdateFileRequest;
 import backup.protocol.Commands;
 
 /**
- *
+ * Default implementation of RequestFactory.
+ * Parses SYNC_DIRECTORY, GET_FILE_LIST, DELETE_FILE and UPDATE_FILE requests.
  * @author Yuri Korchyomkin
  */
 public class RequestFactoryImpl implements RequestFactory {
     public Request createRequest(Session session, String string){
-        String[] parts = string.split(" ");
+        String[] parts = string.split("\\|");
         assert(parts.length > 0);
-        if(parts[0].equals(Commands.SYNC_DIRECTORY)){
+        if(parts[0].equals(Commands.SYNC_DIRECTORY))
             return new SyncDirectoryRequest(session, parts[1]);
-        }
         if(parts[0].equals(Commands.GET_FILE_LIST))
-            return new GetListRequest(session, session.getDirectoryName());
+            return new GetListRequest(session, session.getDirectory());
         if(parts[0].equals(Commands.DELETE_FILE))
             return new DeleteFileRequest(session, parts[1]);
         if(parts[0].equals(Commands.UPDATE_FILE))

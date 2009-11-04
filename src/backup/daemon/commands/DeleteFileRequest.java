@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- *
+ * Server-side representation of delete file request.
  * @author Yuri Korchyomkin
  */
 public class DeleteFileRequest extends Request{

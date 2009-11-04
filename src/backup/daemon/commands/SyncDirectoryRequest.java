@@ -5,9 +5,9 @@ import backup.protocol.Commands;
 import java.io.InputStream;
 
 /**
- *
- * @author Yuri Korchyomkin
+ * Server-side representation of a request for directry synchronization.
  * This request should be the first command from agent.
+ * @author Yuri Korchyomkin
  */
 public class SyncDirectoryRequest extends Request {
     private final Session session;

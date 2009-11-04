@@ -10,6 +10,7 @@ import backup.protocol.Commands;
 import backup.protocol.FileRecord;
 import backup.protocol.Responses;
 import backup.protocol.SocketAutoConnector;
+import java.io.File;
 import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
@@ -27,7 +28,7 @@ public class UpdateFileTest extends Session implements FolderWriter {
     byte[] actualBytes;
 
     public UpdateFileTest() {
-        super("localhost");
+        super(new File("C:\\TMP"),"localhost");
     }
 
     @Before
@@ -63,11 +64,11 @@ public class UpdateFileTest extends Session implements FolderWriter {
         for(int i = 0; i < bytes.length; i++)
             bytes[i] = (byte)(i % 256);
         // send request to client
-        backup.agent.commands.UpdateFileRequest clientRequest = new UpdateFileRequest(filename, offset, bytes);
+        backup.agent.commands.UpdateFileRequest clientRequest = new UpdateFileRequest(filename, offset, bytes, bytes.length);
         clientRequest.send(connector.getClientOut());
         // reading request at server
         String requestString = readLine(connector.getServerIn());
-        String[] requestParts = requestString.split(" ");
+        String[] requestParts = requestString.split("\\|");
         assertEquals(Commands.UPDATE_FILE, requestParts[0]);
         assertEquals(filename, requestParts[1]);
         int requestOffset = Integer.valueOf(requestParts[2]);

@@ -3,6 +3,7 @@ package backup.daemon;
 import backup.agent.commands.SyncDirectoryRequest;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -28,7 +29,7 @@ public class TCPBackupServerTest {
     public void setUp() throws Exception{
         rootDirectory = new File("daemon-test");
         assertTrue(rootDirectory.mkdir());
-        sessions = new SessionStore();
+        sessions = new SessionStore(rootDirectory);
         executor = Executors.newCachedThreadPool();
         listener = new ServerSocket(PORT);
         server = new TCPBackupServer(sessions, listener, executor, new RequestFactoryImpl());
@@ -72,9 +73,20 @@ public class TCPBackupServerTest {
         SyncDirectoryRequest request = new SyncDirectoryRequest("C:/TMP");
         request.send(clientConnection.getOutputStream());
 
-        BufferedReader rdr = new BufferedReader(new InputStreamReader(clientConnection.getInputStream()));
-        System.out.println(rdr.readLine());
+        String response = readLine(clientConnection.getInputStream());
+        System.out.println(response);
         clientConnection.close();
+    }
+
+    String readLine(java.io.InputStream in) throws IOException{
+        int symbol;
+        StringBuffer buffer = new StringBuffer();
+        while((symbol = in.read()) != -1){
+            if(symbol == '\n' || symbol == '\r' || symbol == Character.LINE_SEPARATOR)
+                break;
+            buffer.append((char) symbol);
+        }
+        return buffer.toString();
     }
 
 

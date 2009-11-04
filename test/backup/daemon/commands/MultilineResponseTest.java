@@ -30,7 +30,7 @@ public class MultilineResponseTest {
         instance.writeResponse(out);
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
         BufferedReader rdr = new BufferedReader(new InputStreamReader(in));
-        String[] header = rdr.readLine().split(" ");
+        String[] header = rdr.readLine().split("\\|");
         assertEquals(header[0], "OK");
         int lineNumber = Integer.valueOf(header[1]);
         assertEquals(lines.length, lineNumber);

@@ -20,16 +20,16 @@ import static org.junit.Assert.*;
  */
 public class TCPHandlerTest extends RequestFactoryImpl{
     private ExecutorService executor;
-    private DataOutputStream pipeOut;
+    private OutputStreamWriter pipeOut;
     private PipedInputStream pipeIn;
 
     @Before
     public void handlerOut() throws IOException {
 
-        session = new Session("localhost");
+        session = new Session(new File("C:\\TMP"),"localhost");
 
         in = new PipedInputStream();
-        pipeOut = new DataOutputStream(new PipedOutputStream(in));
+        pipeOut = new OutputStreamWriter(new PipedOutputStream(in));
         out = new PipedOutputStream();
         pipeIn = new PipedInputStream(out);
         handler = new TCPHandler(session, this, in, out);
@@ -66,7 +66,7 @@ public class TCPHandlerTest extends RequestFactoryImpl{
     @Test
     public void testCanHandleSingleRequest() throws Exception {
         System.out.println("Can handle single request");
-        pipeOut.writeChars(Commands.SYNC_DIRECTORY + " hello" + "\n");
+        pipeOut.write(Commands.SYNC_DIRECTORY + " hello" + "\n");
         waitProcessing(1);
         assertEquals(1, requests.size());
         assertTrue(requests.get(0).startsWith(Commands.SYNC_DIRECTORY));
@@ -86,7 +86,7 @@ public class TCPHandlerTest extends RequestFactoryImpl{
     @Test
     public void testResponseIsWrittenToOutputStream() throws Exception{
         System.out.println("Response is written to output stream");
-        pipeOut.writeChars(Commands.SYNC_DIRECTORY + " hello" + "\n");
+        pipeOut.write(Commands.SYNC_DIRECTORY + " hello" + "\n");
         waitProcessing(1);
         CharBuffer buf = CharBuffer.allocate(1024);
         String response = readLineFromPipe();
@@ -96,8 +96,8 @@ public class TCPHandlerTest extends RequestFactoryImpl{
     @Test
     public void testCanHandleMultipleRequests() throws Exception{
         System.out.println("Can handle multiple requests");
-        pipeOut.writeChars(Commands.SYNC_DIRECTORY + " hello" + "\n");
-        pipeOut.writeChars(Commands.GET_FILE_LIST + "\n");
+        pipeOut.write(Commands.SYNC_DIRECTORY + " hello" + "\n");
+        pipeOut.write(Commands.GET_FILE_LIST + "\n");
         waitProcessing(2);
         assertEquals(2, requests.size());
         assertTrue(requests.get(0).startsWith(Commands.SYNC_DIRECTORY));

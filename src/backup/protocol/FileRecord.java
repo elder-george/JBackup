@@ -3,7 +3,8 @@ package backup.protocol;
 import java.util.Date;
 
 /**
- *
+ * Structure representing file information used for taking decisions during synchronization.
+ * Currently contains file name and last modification date
  * @author Yuri Korchyomkin
  */
 public class FileRecord {

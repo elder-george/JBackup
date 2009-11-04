@@ -5,17 +5,17 @@ package backup.agent.commands;
 
 import backup.protocol.FileRecord;
 import backup.protocol.Responses;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
- *
+ * Client-side response for GetListRequest.
+ * Typical response looks like:
+ * "OK|2"
+ * "1.txt|02.03.2009 22:00:00"
  * @author Yuri Korchyomkin
  */
 public class GetListResponse implements Response{
@@ -25,7 +25,7 @@ public class GetListResponse implements Response{
     FileRecord[] files;
 
     public GetListResponse(String responseString){
-        String[] parts = responseString.split(" ");
+        String[] parts = responseString.split("\\|");
         if(!parts[0].equals(Responses.OK))
             throw new RuntimeException("Request processing failed: "+ parts[1]);
         lineCount = Integer.valueOf(parts[1]);
@@ -42,6 +42,12 @@ public class GetListResponse implements Response{
         return buffer.toString();
     }
 
+    /**
+     * reconstructs list of FileRecord objects from received data.
+     * @param in stream to read data from
+     * @throws IOException
+     * @throws ParseException
+     */
     @Override
     public void readAdditionalData(InputStream in) throws IOException, ParseException {
         assert(files == null);
@@ -49,9 +55,8 @@ public class GetListResponse implements Response{
         for(int i = 0; i < lineCount; i++)
         {
             String line = readLine(in);
-            String[] record = line.split(" ");
-            //HACK!
-            fileRecords.add(new FileRecord(record[0], format.parse(record[1]+ " "+ record[2])));
+            String[] record = line.split("\\|");
+            fileRecords.add(new FileRecord(record[0], format.parse(record[1])));
         }
         this.files = new FileRecord[fileRecords.size()];
         fileRecords.toArray(files);

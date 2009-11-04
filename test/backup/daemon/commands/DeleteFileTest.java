@@ -11,6 +11,7 @@ import backup.protocol.Commands;
 import backup.protocol.FileRecord;
 import backup.protocol.SocketAutoConnector;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,13 +32,13 @@ public class DeleteFileTest extends Session implements FolderWriter {
     ArrayList<String> deletedFiles;
 
     public DeleteFileTest(){
-        super("localhost");
+        super(new File("C:\\TMP"),"localhost");
     }
 
     @Before
     public void setUp() throws Exception{
          connector = new SocketAutoConnector();
-         session = new Session("localhost");
+//         session = new Session("localhost");
          deletedFiles = new ArrayList<String>();
     }
 

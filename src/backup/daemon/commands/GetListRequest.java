@@ -5,11 +5,9 @@ import backup.protocol.Commands;
 import backup.protocol.FileRecord;
 import java.io.InputStream;
 import java.text.DateFormat;
-import java.text.MessageFormat;
-import java.util.ArrayList;
 
 /**
- *
+ * Server-side object representing request for file list.
  * @author Yuri Korchyomkin
  */
 public class GetListRequest extends Request {
@@ -34,7 +32,7 @@ public class GetListRequest extends Request {
 
         for(int i = 0; i< result.length; i++){
             FileRecord f = files[i];
-            result[i] = f.getName() + " " + format.format(f.getModificationDate());
+            result[i] = f.getName() + "|" + format.format(f.getModificationDate());
         }
         return new MultilineResponse(result);
     }

@@ -1,15 +1,14 @@
-/*
- */
-
 package backup.agent.commands;
 
 import backup.protocol.Commands;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 
 /**
- *
+ * Client-side implementation of SyncDirectory request.
+ * In case of success OK responses should be received.
+ * Typical request looks like: "SYNC_DIR|my_directory\n"
  * @author Yuri Korchyomkin
  */
 public class SyncDirectoryRequest implements Request{
@@ -21,8 +20,10 @@ public class SyncDirectoryRequest implements Request{
 
     @Override
     public void send(OutputStream out) throws IOException {
-        DataOutputStream wr = new DataOutputStream(out);
-        wr.writeChars(Commands.SYNC_DIRECTORY+" "+directory + (char)Character.LINE_SEPARATOR);
+        OutputStreamWriter wr = new OutputStreamWriter(out);
+        wr.write(Commands.SYNC_DIRECTORY+"|"+directory + (char)Character.LINE_SEPARATOR);
+        wr.flush();
+        out.flush();        
     }
 
 }

@@ -2,12 +2,11 @@ package backup.daemon.commands;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
 
 /**
- *
+ * Base class for response objects.
  * @author Yuri Korchyomkin
- */
+  */
 public abstract class Response {
 
 

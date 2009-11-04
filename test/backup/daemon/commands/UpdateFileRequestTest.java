@@ -7,6 +7,7 @@ import backup.daemon.FolderWriter;
 import backup.daemon.Session;
 import backup.protocol.FileRecord;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import org.junit.After;
 import org.junit.Before;
@@ -20,7 +21,7 @@ import static org.junit.Assert.*;
 public class UpdateFileRequestTest extends Session implements FolderWriter {
 
     public UpdateFileRequestTest() {
-        super("localhost");
+        super(new File("C:\\TMP"), "localhost");
     }
 
     @Before

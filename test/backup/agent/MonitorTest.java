@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
  *
  * @author Yuri Korchyomkin
  */
-public class MonitorTest implements BackupService, Folder {
+public class MonitorTest implements BackupService, FolderReader {
 
     public MonitorTest() {
     }
@@ -112,11 +112,11 @@ public class MonitorTest implements BackupService, Folder {
         System.out.printf("file %s was deleted\n", fileName);
     }
     @Override
-    public void updateFile(String name, Date modificationDate, int offset, byte[] contents) {
+    public void updateFile(String name, Date modificationDate, int offset, byte[] contents, int size) {
         //Integer oldValue = updated.get(name);
         if(!updated.containsKey(name)){
             created.add(name);
-            updated.put(name, contents.length);
+            updated.put(name, size);
             monitoredFiles.add(new FileRecord(name, modificationDate));
         }
         else

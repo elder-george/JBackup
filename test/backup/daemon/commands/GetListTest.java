@@ -10,6 +10,7 @@ import backup.protocol.FileRecord;
 import backup.protocol.SocketAutoConnector;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -29,7 +30,7 @@ public class GetListTest extends Session implements FolderWriter{
     FileRecord[] files;
 
     public GetListTest(){
-        super("localhost");
+        super(new File("c:\\TMP"),"localhost");
     }
 
     @Before
@@ -60,8 +61,8 @@ public class GetListTest extends Session implements FolderWriter{
         Calendar c = Calendar.getInstance();
         DateFormat f = DateFormat.getDateTimeInstance();
         MultilineResponse serverResponse = new MultilineResponse(new String[]{
-                    "1.txt "+f.format(c.getTime()),
-                    "2.txt "+f.format(c.getTime()),
+                    "1.txt|"+f.format(c.getTime()),
+                    "2.txt|"+f.format(c.getTime()),
                 });
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         serverResponse.writeResponse(out);
@@ -81,12 +82,13 @@ public class GetListTest extends Session implements FolderWriter{
         System.out.println("process");
         Calendar c = Calendar.getInstance();
         files = new FileRecord[]{   new FileRecord("1.txt", c.getTime()),
-                                    new FileRecord("2.txt", c.getTime())};
+                                    new FileRecord("яяя.txt", c.getTime())};
         // sending request to server
         backup.agent.commands.GetListRequest clientSideRequest = new backup.agent.commands.GetListRequest();
         clientSideRequest.send(connector.getClientOut());
         // receiving request on server
         String requestString = readLine(connector.getServerIn());
+        System.out.println(requestString);
         assertTrue(requestString.startsWith(Commands.GET_FILE_LIST));
         Request serverSideRequest = factory.createRequest(this, requestString);
         serverSideRequest.readAdditionalData(connector.getServerIn());
