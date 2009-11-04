@@ -14,10 +14,10 @@ public class TCPBackupServer implements Runnable {
     private final Thread thread;
     private final Executor executor;
     boolean stopped;
-    private final RequestFactoryImpl requestFactory;
+    private final RequestFactory requestFactory;
 
     public TCPBackupServer(SessionStore sessions, ServerSocket listeningSocket, Executor executor,
-                            RequestFactoryImpl requestFactory){
+                            RequestFactory requestFactory){
         this.sessions = sessions;
         this.listeningSocket = listeningSocket;
         this.thread = new Thread(this, "listener");
@@ -42,7 +42,8 @@ public class TCPBackupServer implements Runnable {
     public void stop(){
         try{
             stopped = true;
-            thread.join();
+            thread.join(1000);
+            thread.interrupt();
         }catch(InterruptedException ex){
             System.err.println("Thread was interrupted");
         }

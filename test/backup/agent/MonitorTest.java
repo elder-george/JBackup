@@ -4,6 +4,7 @@ import backup.protocol.FileRecord;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -99,18 +100,18 @@ public class MonitorTest implements BackupService, Folder {
             assertEquals(actualFiles.get(i).getModificationDate(), actualFiles.get(i).getModificationDate());
         }
     }
-
+    @Override
     public FileRecord[] getMonitoredFilesList() {
         FileRecord[] records = new FileRecord[monitoredFiles.size()];
         return monitoredFiles.toArray(records);
     }
-
+    @Override
     public void deleteFile(String fileName) {
         deleted.add(fileName);
         monitoredFiles.remove(new FileRecord(fileName, null));
         System.out.printf("file %s was deleted\n", fileName);
     }
-
+    @Override
     public void updateFile(String name, Date modificationDate, int offset, byte[] contents) {
         //Integer oldValue = updated.get(name);
         if(!updated.containsKey(name)){
@@ -144,5 +145,8 @@ public class MonitorTest implements BackupService, Folder {
         } finally {
             instance.stop();
         }
+    }
+
+    public void setMonitoredDirectory(String directory) throws IOException, ParseException {
     }
 }

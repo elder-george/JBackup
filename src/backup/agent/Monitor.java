@@ -7,8 +7,6 @@ import java.text.ParseException;
 import java.util.Collection;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -38,6 +36,7 @@ class Monitor implements Runnable{
     public void run(){
         System.out.println("Monitoring started");
         try{
+            service.setMonitoredDirectory(this.folder.getName());
             while(!shouldStop.tryAcquire(timeoutMilliseconds, TimeUnit.MILLISECONDS)){
                 FileRecord[] monitoredFiles = service.getMonitoredFilesList();
                 FileRecord[] actualFiles = folder.getFiles();

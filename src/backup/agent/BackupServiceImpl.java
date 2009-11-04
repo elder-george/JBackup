@@ -5,10 +5,11 @@ package backup.agent;
 
 import backup.protocol.FileRecord;
 import backup.agent.commands.DeleteFileRequest;
-import backup.agent.commands.DeleteFileResponse;
 import backup.agent.commands.GetListRequest;
 import backup.agent.commands.GetListResponse;
 import backup.agent.commands.OKResponse;
+import backup.agent.commands.SyncDirectoryRequest;
+import backup.agent.commands.UpdateFileRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -60,8 +61,21 @@ public class BackupServiceImpl implements BackupService{
     }
     
     @Override
-    public void updateFile(String fileName, Date modificationDate, int offset, byte[] contents) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void updateFile(String fileName, Date modificationDate, int offset, byte[] contents)
+        throws IOException, ParseException
+    {
+        UpdateFileRequest request = new UpdateFileRequest(fileName, offset, contents);
+        request.send(out);
+        OKResponse response = new OKResponse(readLine(in));
+        response.readAdditionalData(in);
+    }
+
+    @Override
+    public void setMonitoredDirectory(String directory) throws IOException, ParseException{
+        SyncDirectoryRequest request = new SyncDirectoryRequest(directory);
+        request.send(out);
+        OKResponse response = new OKResponse(readLine(in));
+        response.readAdditionalData(in);
     }
 
 }

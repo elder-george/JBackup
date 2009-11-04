@@ -18,9 +18,9 @@ public class TCPHandler implements Runnable {
     private final InputStream in;
     private final OutputStream out;
     final static int MAX_RECV_BUFFER = 8192;
-    private final RequestFactoryImpl requestFactory;
+    private final RequestFactory requestFactory;
 
-    TCPHandler(Session session, backup.daemon.RequestFactoryImpl requestFactory, InputStream in, OutputStream out){
+    TCPHandler(Session session, backup.daemon.RequestFactory requestFactory, InputStream in, OutputStream out){
         this.session = session;
         this.in = in;
         this.out = out;

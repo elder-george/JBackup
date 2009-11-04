@@ -14,6 +14,7 @@ public interface BackupService {
             throws IOException, ParseException;
     void deleteFile(String fileName)
             throws IOException, ParseException;
-    public void updateFile(String fileName, Date modificationDate, int offset, byte[] contents) 
+    void updateFile(String fileName, Date modificationDate, int offset, byte[] contents) 
             throws IOException, ParseException;
+    void setMonitoredDirectory(String directory) throws IOException, ParseException;
 }
