@@ -31,10 +31,6 @@ class Monitor implements Runnable{
         this.timeoutMilliseconds = timeoutMilliseconds;
     }
 
-    public Monitor(String monitoredDirectory, BackupService service, int timeoutMilliseconds) {
-        this(new FolderImpl(monitoredDirectory), service, timeoutMilliseconds);
-    }
-
     public void start(){
         monitorThread.start();
     }
